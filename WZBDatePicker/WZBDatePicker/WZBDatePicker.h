@@ -20,14 +20,16 @@ typedef NS_ENUM(NSInteger, WZBDatePickerType) {
 };
 
 @interface WZBDatePicker : UIView
-//* 显示，pickerType：显示方式 resultDidChange：滑动picker的时候调用  block参数age：年龄，constellation：星座 **/
+/* 显示方法 view：如果WZBDatePickerInputView传拥有inputView的空间，其他传普通的view，pickerType：显示方式 resultDidChange：滑动picker的时候调用  block参数age：年龄，constellation：星座 **/
 + (instancetype)showToView:(UIView *)view pickerType:(WZBDatePickerType)pickerType resultDidChange:(void(^)(NSString *age, NSString *constellation))resultDidChange;
-//* 是否有黑色半透明遮罩，默认没有，在pickerType=WZBDatePickerInputView时不起任何作用 **/
+
+/* 是否有黑色半透明遮罩，默认没有，在pickerType!=WZBDatePickerBottomPop时不起任何作用 **/
 @property (nonatomic, assign, getter=isEnableDarkMask) BOOL enableDarkMask;
-//* 设置初始时间 **/
+
+/* 设置初始时间 **/
 - (void)setCurrentDate:(NSDate *)date;
 
-//* 隐藏 **/
+/* 隐藏 **/
 - (void)hidden;
 
 @end

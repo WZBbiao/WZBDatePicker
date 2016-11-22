@@ -147,14 +147,23 @@ static UIView * getLineView() {
     if (self = [super initWithFrame:frame]) {
         self.checkedDate = [NSDate date];
         self.backgroundColor = self.isEnableDarkMask ? [UIColor colorWithWhite:0 alpha:0.2] : [UIColor clearColor];
-        [self addGestureRecognizer:[[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(tapClick)]];
+        [self addGestureRecognizer:[[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(tapClick:)]];
     }
     return self;
 }
 
-- (void)tapClick {
+- (void)tapClick:(UITapGestureRecognizer *)tap {
+    if (self.pickerType != WZBDatePickerBottomPop) return;
     if (self.isEnableDarkMask) {
+        if (CGRectContainsPoint(self.tableView.frame, [tap locationInView:self])) return;
         [self hidden];
+    }
+}
+
+- (void)setEnableDarkMask:(BOOL)enableDarkMask {
+    _enableDarkMask = enableDarkMask;
+    if (self.pickerType == WZBDatePickerBottomPop) {
+        self.backgroundColor = self.isEnableDarkMask ? [UIColor colorWithWhite:0 alpha:0.2] : [UIColor clearColor];
     }
 }
 
@@ -176,11 +185,11 @@ static UIView * getLineView() {
         frame.origin.y = WZBScreenHeight - frame.size.height;
         datePicker.tableView.frame = frame;
     } else if (pickerType == WZBDatePickerInputView) {
-//        if ([view respondsToSelector:@selector(inputView)]) {
-//            [view setValue:datePicker forKey:@"inputView"];
-//        } else {
-//            NSException *exception = [];
-//        }
+        //        if ([view respondsToSelector:@selector(inputView)]) {
+        //            [view setValue:datePicker forKey:@"inputView"];
+        //        } else {
+        //            NSException *exception = [];
+        //        }
         // 判断传进来的view是否有键盘属性
         NS_DURING [view setValue:datePicker forKey:@"inputView"];
         NS_HANDLER NSLog(@"您传进来的View没有键盘属性");
@@ -203,14 +212,11 @@ static UIView * getLineView() {
     [self.tableView reloadData];
 }
 
-- (void)setFrame:(CGRect)frame {
-    super.frame = frame;
-}
-
 - (void)setCurrentDate:(NSDate *)date {
     self.picker.date = date;
 }
 
+// 获取年份
 - (NSInteger)yearWithDate:(NSDate *)date {
     NSCalendar *calendar = [[NSCalendar alloc] initWithCalendarIdentifier:NSCalendarIdentifierGregorian];
     unsigned int unitFlags = allCalendarUnitFlags;
